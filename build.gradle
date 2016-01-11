@@ -1,0 +1,60 @@
+plugins {
+	id 'java'
+	id 'groovy'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+	id 'maven'
+	id 'com.jfrog.bintray' version '1.4'
+}
+
+group = 'com.github.aesteve'
+version = '0.1'
+
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.4.5'
+
+	testCompile 'junit:junit:4.12'
+}
+
+bintray {
+	user = 'aesteve'
+	key = System.getenv('BINTRAY_KEY')
+	pkg {
+		repo = 'maven'
+		name = project.name
+		licenses = ['Apache-2.0']
+		vcsUrl = 'https://github.com/aesteve/vertx-groovy-sugar'
+		labels = ['groovy', 'vertx', 'vert.x']
+		publicDownloadNumbers = true
+		version {
+			name = project.version
+			description = 'Extensions + Promises'
+		}
+		publications = ['maven']
+	}
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+		}
+	}
+}
+
+task sourcesJar(type: Jar) {
+	classifier 'sources'
+	from sourceSets.main.allGroovy
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.10'
+}
